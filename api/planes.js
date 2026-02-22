@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const conexion = require("../conexion");
-
+const { verificarToken, soloAdmin } = require("../middleware/authMiddleware");
 
 /* ======================================================
    GET - LISTAR TODOS LOS PLANES

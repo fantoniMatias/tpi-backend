@@ -12,6 +12,8 @@ app.use(express.json());
 // Rutas
 app.use("/api", require("./api/planes"));
 
+app.use("/api", require("./api/auth"));
+
 // Ruta de prueba
 app.get("/", (req, res) => {
   res.send("Servidor backend funcionando 🚀");
