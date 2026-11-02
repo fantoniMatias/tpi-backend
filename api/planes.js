@@ -47,7 +47,7 @@ router.get("/planes/:id", (req, res) => {
    POST - CREAR NUEVO PLAN
    Endpoint: POST /api/planes
 ====================================================== */
-router.post("/planes", (req, res) => {
+router.post("/planes", verificarToken, soloAdmin, (req, res) => {
   const { nombre, ram_gb, cpu_cores, almacenamiento_gb, precio } = req.body;
 
   const sql = `
@@ -77,7 +77,7 @@ router.post("/planes", (req, res) => {
    PUT - ACTUALIZAR PLAN POR ID
    Endpoint: PUT /api/planes/:id
 ====================================================== */
-router.put("/planes/:id", (req, res) => {
+router.put("/planes/:id", verificarToken, soloAdmin, (req, res) => {
   const id = req.params.id;
   const { nombre, ram_gb, cpu_cores, almacenamiento_gb, precio } = req.body;
 
@@ -110,7 +110,7 @@ router.put("/planes/:id", (req, res) => {
    DELETE - ELIMINAR PLAN POR ID
    Endpoint: DELETE /api/planes/:id
 ====================================================== */
-router.delete("/planes/:id", (req, res) => {
+router.delete("/planes/:id", verificarToken, soloAdmin, (req, res) => {
   const id = req.params.id;
 
   const sql = "DELETE FROM planes WHERE id_plan = ?";
