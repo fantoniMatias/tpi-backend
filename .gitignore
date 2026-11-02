@@ -1,0 +1,5 @@
+# Librerías instaladas con npm (se recuperan con "npm install")
+node_modules
+
+# Variables secretas (contraseña de la base de datos, clave del JWT)
+.env
