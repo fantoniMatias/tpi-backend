@@ -8,9 +8,10 @@ const jwt = require("jsonwebtoken");
 router.post("/login", (req, res) => {
   const { username, password } = req.body;
 
-  const sql = "SELECT * FROM usuarios WHERE username = ?";
+  // Busca por usuario o por email: el mismo dato se compara con las dos columnas
+  const sql = "SELECT * FROM usuarios WHERE username = ? OR email = ?";
 
-  conexion.query(sql, [username], async (error, results) => {
+  conexion.query(sql, [username, username], async (error, results) => {
     if (error) {
       return res.status(500).json({ error: "Error en el servidor" });
     }
@@ -38,8 +39,37 @@ router.post("/login", (req, res) => {
 
     res.json({
       mensaje: "Login exitoso",
-      token
+      token,
+      usuario: {
+        username: usuario.username,
+        email: usuario.email,
+        rol: usuario.rol
+      }
     });
+  });
+});
+
+// REGISTRO
+router.post("/registro", async (req, res) => {
+  const { username, email, password } = req.body;
+
+  if (!username || !email || !password) {
+    return res.status(400).json({ mensaje: "Faltan datos" });
+  }
+
+  const passwordHasheada = await bcrypt.hash(password, 10);
+
+  const sql = "INSERT INTO usuarios (username, email, password) VALUES (?, ?, ?)";
+
+  conexion.query(sql, [username, email, passwordHasheada], (error) => {
+    if (error) {
+      if (error.code === "ER_DUP_ENTRY") {
+        return res.status(409).json({ mensaje: "El usuario o email ya existe" });
+      }
+      return res.status(500).json({ error: "Error en el servidor" });
+    }
+
+    res.status(201).json({ mensaje: "Usuario registrado" });
   });
 });
 

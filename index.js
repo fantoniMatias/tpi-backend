@@ -13,6 +13,9 @@ app.use(express.json());
 app.use("/api", require("./api/planes"));
 
 app.use("/api", require("./api/auth"));
+app.use("/api", require("./api/usuarios"));
+app.use("/api", require("./api/servidores"));
+app.use("/api", require("./api/ubicaciones"));
 
 // Ruta de prueba
 app.get("/", (req, res) => {

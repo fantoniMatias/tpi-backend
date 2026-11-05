@@ -1,4 +1,5 @@
 const jwt = require("jsonwebtoken");
+const conexion = require("../conexion");
 
 function verificarToken(req, res, next) {
   const authHeader = req.headers["authorization"];
@@ -27,4 +28,21 @@ function soloAdmin(req, res, next) {
   next();
 }
 
-module.exports = { verificarToken, soloAdmin };
+// Deja pasar al admin o al dueño del servidor
+function duenoOAdmin(req, res, next) {
+  const sql = "SELECT id_usuario FROM servidores WHERE id_servidor = ?";
+
+  conexion.query(sql, [req.params.id], (error, results) => {
+    if (error || results.length === 0) {
+      return res.status(404).json({ mensaje: "Servidor no encontrado" });
+    }
+
+    if (req.usuario.rol !== "admin" && req.usuario.id !== results[0].id_usuario) {
+      return res.status(403).json({ mensaje: "No tenés permiso" });
+    }
+
+    next();
+  });
+}
+
+module.exports = { verificarToken, soloAdmin, duenoOAdmin };
