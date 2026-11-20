@@ -4,7 +4,34 @@ const conexion = require("../conexion");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 
-// LOGIN
+/**
+ * Bloques que se repiten en varias rutas. Cada ruta los llama por su nombre (Token, Admin)
+ *
+ * @apiDefine Token
+ * @apiHeader {String} Authorization Token del login: "Bearer &lt;token&gt;".
+ * @apiError (401) TokenInvalido El token no es válido o venció.
+ * @apiError (403) TokenRequerido No se mandó el token.
+ */
+
+/**
+ * @apiDefine Admin
+ * @apiPermission admin
+ * @apiError (403) SoloAdmin El usuario no es admin.
+ */
+
+/**
+ * @api {post} /login Iniciar sesión
+ * @apiName Login
+ * @apiGroup Autenticación
+ * @apiDescription Acepta el nombre de usuario o el email. Devuelve un token JWT que se manda en las rutas privadas.
+ *
+ * @apiBody {String} username Nombre de usuario o email.
+ * @apiBody {String} password Contraseña.
+ *
+ * @apiSuccess {String} token Token JWT.
+ * @apiSuccess {Object} usuario Datos del usuario (username, email, rol).
+ * @apiError (401) UsuarioNoEncontrado No existe el usuario o la contraseña es incorrecta.
+ */
 router.post("/login", (req, res) => {
   const { username, password } = req.body;
 
@@ -49,7 +76,20 @@ router.post("/login", (req, res) => {
   });
 });
 
-// REGISTRO
+/**
+ * @api {post} /registro Crear una cuenta
+ * @apiName Registro
+ * @apiGroup Autenticación
+ * @apiDescription La contraseña se guarda hasheada con bcrypt. La cuenta nueva tiene rol "cliente".
+ *
+ * @apiBody {String} username Nombre de usuario.
+ * @apiBody {String} email Email.
+ * @apiBody {String} password Contraseña.
+ *
+ * @apiSuccess (201) {String} mensaje "Usuario registrado".
+ * @apiError (400) FaltanDatos Falta algún campo.
+ * @apiError (409) YaExiste El usuario o el email ya están registrados.
+ */
 router.post("/registro", async (req, res) => {
   const { username, email, password } = req.body;
 

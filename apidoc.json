@@ -1,0 +1,7 @@
+{
+  "name": "NexusHost API",
+  "version": "1.0.0",
+  "description": "API REST de NexusHost: plataforma simulada para crear y administrar servidores de Minecraft.",
+  "title": "NexusHost - Documentación de la API",
+  "url": "http://localhost:3000/api"
+}
